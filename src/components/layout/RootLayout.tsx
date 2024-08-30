@@ -1,18 +1,14 @@
-
-import Login from "../auth/Login";
-import Register from "../auth/Register";
+import AuthLayout from "./AuthLayout";
+import ChatLayout from "./ChatLayout";
 
 export const RootLayout = () => {
-  const user = false;
+  const user = true;
   return (
-    <div>
+    <div className="bg-white">
       {user ? (
-        <h1>Welcome back!</h1>
+        <ChatLayout/>
       ) : (
-        <div className="h-screen bg-orange-300 grid grid-cols-2 place-content-center">
-          <Login />
-          <Register/>
-        </div>
+        <AuthLayout/>
       )}
     </div>
   );
