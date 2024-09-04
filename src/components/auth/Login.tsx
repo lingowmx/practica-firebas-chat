@@ -3,6 +3,9 @@ import { LoginFormSchema as formSchema } from "@/lib/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { signInWithEmailAndPassword, AuthError } from "firebase/auth";
+import { useAuth } from "reactfire";
+import { useLoadingStore } from "@/store/LoadingStore";
 import {
   Form,
   FormControl,
@@ -12,9 +15,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardDescription, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardDescription,
+  CardTitle,
+} from "../ui/card";
 
 const Login = () => {
+  const auth = useAuth();
+  const { loading, setIsLoading } = useLoadingStore();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -23,7 +34,26 @@ const Login = () => {
     },
   });
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    try {
+      setIsLoading(true); //activar el loading
+      await signInWithEmailAndPassword(auth, values.email, values.password);
+    } catch (error) {
+      const firebaseError = error as AuthError;
+      if (firebaseError.code === "auth/invalid-login-credentials") {
+        form.setError("email", {
+          type: "manual",
+          message: "Invalid credentials",
+        });
+        if (firebaseError.code === "auth/invalid-login-credentials") {
+          form.setError("password", {
+            type: "manual",
+            message: "Invalid credentials",
+          });
+        }
+      }
+    }finally{
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -31,9 +61,7 @@ const Login = () => {
       <Card className="bg-white">
         <CardHeader>
           <CardTitle>Welcome back</CardTitle>
-          <CardDescription>
-            Welcome back!
-          </CardDescription>
+          <CardDescription>Welcome back!</CardDescription>
           <CardContent>
             <Form {...form}>
               <form
@@ -70,7 +98,9 @@ const Login = () => {
                     </FormItem>
                   )}
                 />
-                <Button type="submit">Login</Button>
+                <Button type="submit" disabled={loading}>
+                  Login
+                </Button>
               </form>
             </Form>
           </CardContent>

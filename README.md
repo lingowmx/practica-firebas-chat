@@ -1,6 +1,7 @@
 ### Resoources
 -[React Icons](https://react-icons.github.io/react-icons/)
 =[Emoji picker](https://www.npmjs.com/package/emoji-picker-react)
+-[zustand](https://zustand.docs.pmnd.rs/getting-started/introduction)
 
 ### Input File
 -[Input File](https://github.com/shadcn-ui/ui/discussions/2137)

@@ -27,7 +27,6 @@ export const Friends = () => {
     };
     getFriends();
   }, []);
-  console.log({ friends });
   return (
     <section className="grid grid-rows-[auto_1fr] h-screen border-r-2">
       <div className="border-b p-4">

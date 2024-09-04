@@ -21,14 +21,14 @@ export const Message = ({
       })}
     >
       <img src={imageURL} className="rounded-full size-12 mt-2 mx-2" alt="" />
-      <div className={cn("p-1 mt-2 rounded-md max-w-[75%] h-full", {
+      <div className={cn("p-1 mt-2 rounded-md max-w-[75%] h-full shadow-multi-layer", {
         "bg-white": !isCurrentUser,
-        "bg-pink-200": isCurrentUser,
+        "bg-pink-100": isCurrentUser,
       })}>
-        <p>
+        <div>
           {message}
           <p className="text-right text-xs text-gray-400">{time}</p>
-        </p>
+        </div>
       </div>
     </article>
   );

@@ -4,6 +4,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
+  AuthError,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { ref, uploadBytes, getDownloadURL, getStorage } from "firebase/storage";
+import { useLoadingStore } from "@/store/LoadingStore";
+
+import {
   Form,
   FormControl,
   FormField,
@@ -19,8 +27,12 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import { useAuth } from "reactfire";
 
 const Register = () => {
+  const auth = useAuth();
+  const storage = getStorage();
+  const { loading, setIsLoading } = useLoadingStore();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -33,6 +45,40 @@ const Register = () => {
   });
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+    setIsLoading(true); //activar el loading
+    try {
+      const { user } = await createUserWithEmailAndPassword(
+        auth,
+        values.email,
+        values.password
+      );
+      console.log("User created");
+
+      //guardar avatar en storage
+      const storageRef = ref(storage, "avatars/" + user.uid + "jpg");
+      await uploadBytes(storageRef, values.pictureURL);
+      // recuperar la url del avatar
+      const photoURL = await getDownloadURL(storageRef);
+      // actualizar el perfil del usuario con la url del avatar
+      await updateProfile(user, {
+        displayName: values.displayName,
+        photoURL,
+      });
+      console.log("Profile updated");
+    } catch (error) {
+      console.error(error);
+      const firebaseError = error as AuthError;
+      if (firebaseError.code === "auth/email-already-in-use") {
+        form.setError("email", {
+          type: "server",
+          message: "Email already in use",
+        });
+        return;
+      }
+      console.log("error creating user");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -47,7 +93,6 @@ const Register = () => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-8"
               >
-
                 <FormField
                   control={form.control}
                   name="displayName"
@@ -108,7 +153,7 @@ const Register = () => {
                     </FormItem>
                   )}
                 />
-                                <FormField
+                <FormField
                   control={form.control}
                   name="pictureURL"
                   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -132,7 +177,9 @@ const Register = () => {
                     </FormItem>
                   )}
                 />
-                <Button type="submit">Register</Button>
+                <Button type="submit" disabled={loading}>
+                  Register
+                </Button>
               </form>
             </Form>
           </CardContent>
