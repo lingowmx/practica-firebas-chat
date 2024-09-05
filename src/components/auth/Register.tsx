@@ -3,6 +3,8 @@ import { RegisterFormSchema as formSchema } from "@/lib/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { UserDb} from "@/schemas/firestore-Schema";
+import {setDoc, doc} from "firebase/firestore";
 import {
   AuthError,
   createUserWithEmailAndPassword,
@@ -27,10 +29,11 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { useAuth } from "reactfire";
+import { useAuth, useFirestore } from "reactfire";
 
 const Register = () => {
   const auth = useAuth();
+  const db = useFirestore();
   const storage = getStorage();
   const { loading, setIsLoading } = useLoadingStore();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -50,7 +53,7 @@ const Register = () => {
       const { user } = await createUserWithEmailAndPassword(
         auth,
         values.email,
-        values.password
+        values.password,
       );
       console.log("User created");
 
@@ -65,6 +68,19 @@ const Register = () => {
         photoURL,
       });
       console.log("Profile updated");
+      //guardar las collecciones en firebase, para ello se debe crear un objeto UserDb
+      
+      const userDb: UserDb ={
+        uid: user.uid,
+        displayName: values.displayName,
+        email: values.email,
+        photoURL: photoURL,
+        friends: [],
+        rooms: [],
+      };
+       const userDbRef = doc(db, "users", user.uid);
+       await setDoc(userDbRef, userDb);
+       console.log("userDb created");
     } catch (error) {
       console.error(error);
       const firebaseError = error as AuthError;
