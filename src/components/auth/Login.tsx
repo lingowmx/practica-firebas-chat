@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { signInWithEmailAndPassword, AuthError } from "firebase/auth";
 import { useAuth } from "reactfire";
 import { useLoadingStore } from "@/store/LoadingStore";
+import { useChatStore } from "@/store/chat-store";
 import {
   Form,
   FormControl,
@@ -25,6 +26,7 @@ import {
 
 const Login = () => {
   const auth = useAuth();
+  const { resetFriend } = useChatStore();
   const { loading, setIsLoading } = useLoadingStore();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,6 +39,7 @@ const Login = () => {
     try {
       setIsLoading(true); //activar el loading
       await signInWithEmailAndPassword(auth, values.email, values.password);
+      resetFriend()
     } catch (error) {
       const firebaseError = error as AuthError;
       if (firebaseError.code === "auth/invalid-login-credentials") {

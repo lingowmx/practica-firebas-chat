@@ -13,9 +13,8 @@ export const Messages = () => {
   return (
     <article className="bg-white grid grid-rows-[auto,1fr,auto] h-screen">
       <MessagesHeader />
-      <MessagesMain friends={friend}/>
-      <MessagesFooter 
-      friends={friend}/>
+      <MessagesMain friends={friend} />
+      <MessagesFooter friends={friend} />
     </article>
   );
 };

@@ -3,8 +3,8 @@ import { cn } from "@/lib/utils";
 interface MessageProps {
   message: string;
   time: string;
-  imageURL: string;
-  isCurrentUser: boolean;
+  imageURL: string | null;
+  isCurrentUser: boolean; 
 }
 
 export const Message = ({
@@ -20,7 +20,7 @@ export const Message = ({
         "flex-row": !isCurrentUser,
       })}
     >
-      <img src={imageURL} className="rounded-full size-12 mt-2 mx-2" alt="" />
+      <img src={imageURL  || "https://avatars.dicebear.com/api/initials/user.svg"} className="rounded-full size-12 mt-2 mx-2" alt="" />
       <div className={cn("p-1 mt-2 rounded-md max-w-[75%] h-full shadow-multi-layer", {
         "bg-white": !isCurrentUser,
         "bg-pink-100": isCurrentUser,

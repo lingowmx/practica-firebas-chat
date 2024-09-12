@@ -2,6 +2,7 @@
 -[React Icons](https://react-icons.github.io/react-icons/)
 =[Emoji picker](https://www.npmjs.com/package/emoji-picker-react)
 -[zustand](https://zustand.docs.pmnd.rs/getting-started/introduction)
+-[timeago.js](https://github.com/hustcc/timeago.js)
 
 ### Input File
 -[Input File](https://github.com/shadcn-ui/ui/discussions/2137)
@@ -41,3 +42,13 @@ Uso de pomise all para traer todos los friends
     return unsubscribe;
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);'''
+
+### comments
+Estuve teniendo mucho problema con los mensajes de los amigos, Lo que en verdad sucedia es que como no tenia mensajes con algunos amigos, me marcaba error. Lo que hice fue crear una verificacion
+if (roomData?.messages && Array.isArray(roomData.messages)) {
+        setMessages(roomData.messages); // Asigna los mensajes solo si es un array
+      } else {
+        setMessages([]); // Si no hay mensajes, asignar un array vacío
+      }
+    });
+
