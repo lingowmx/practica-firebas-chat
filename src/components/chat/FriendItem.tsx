@@ -1,16 +1,19 @@
 import { useChatStore } from "@/store/chat-store";
 
 interface FriendItemProps {
+  uid: string;
   displayName: string;
   imageURL: string;
   lastMessage: string;
   roomId: string;
 }
 export const FriendItem = ({
+  uid,
   displayName,
   imageURL,
   lastMessage,
   roomId
+
 }: FriendItemProps) => {
   const { setFriend } = useChatStore();
 
@@ -18,7 +21,7 @@ export const FriendItem = ({
     <article className="flex items-center gap-x-4 py-2 px-4 border-b hover:bg-gray-100 cursor-pointer "
     onClick={() =>
       setFriend ({
-        uid: "",
+        uid,
         displayName,
         imageURL,
         lastMessage,

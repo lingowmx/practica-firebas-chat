@@ -83,6 +83,7 @@ export const Friends = () => {
             imageURL={friend.imageURL}
             lastMessage={friend.lastMessage}
             roomId={friend.roomId}
+            uid={friend.uid}
           />
         ))}
       </div>

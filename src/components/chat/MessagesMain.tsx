@@ -52,7 +52,7 @@ export const MessagesMain = ({ friends }: MessagesMainProps) => {
   }, [friends]);
   return (
     <main
-      className="bg-indigo-50 space-y-2 overflow-y-auto overscroll-contain"
+      className="bg-indigo-50 space-y-2 overflow-y-auto overscroll-contain py-4 "
       ref={containerRef}
     >
       {messages.map((message, index) => (
